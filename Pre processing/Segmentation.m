@@ -117,7 +117,9 @@ for i=1:length(name)
     % This section uses to save file, if your file name concentration, you save
     % concetration var, if your file name rest, you save file rest
     % Please run this section twice to save concentration and rest
-    folder_save=uigetdir;;
+    if ~exist('folder_save')
+        folder_save=uigetdir;;
+    end
     if iscell(name)
         path_save=[folder_save,'\',name{i}];
     else
