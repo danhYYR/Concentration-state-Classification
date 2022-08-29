@@ -46,8 +46,12 @@ for i=1:length(name)
         if exist('x_rest')
             x_raw=x_rest.(channel_name);
         end
-        filtered=filter(b,a,x_raw);
+        if ~isempty(find(isnan(x_raw)))
+            i_nan=find(isnan(x_raw))
+            x_raw(i_nan)=0;
+        end
         %%
+        filtered=filter(b,a,x_raw);
         filtered=lowpass(filtered,f_high,fs);
         filtered=highpass(filtered,f_low,fs);
         % filtered=bandpass(filtered,[0.5 70],fs);
@@ -111,51 +115,32 @@ for i=1:length(name)
     %% Check with power spectrogram
     norm=Normalize(filtered);
     figure
-    pspectrum(norm(:,1),fs,'spectrogram','FrequencyLimits',[0 70],'TimeResolution',3,'OverlapPercent',0.7);
+    pspectrum(norm(:,1),fs,'spectrogram','FrequencyLimits',[0 70],'TimeResolution',30,'OverlapPercent',0.7);
     %% Clear var
+    %% Save data
+    % This section uses to save file, if your file name concentration, you save
+    % concetration var, if your file name rest, you save file rest
+    % Please run this section twice to save concentration and rest
+    if ~exist('path_save')
+        folder_save=uigetdir;
+    end
+    if iscell(name)
+        path_save=[folder_save,'\',name{i}];
+    else
+        path_save=[folder_save,'\',name];
+    end
     if exist('x_concentration')
         % Concentration
-        option = questdlg('Do you want to save ? ',...
-        'Option',...
-        'Yes','No','No');
-        if (option=="Yes")
-            %% Save data
-            % This section uses to save file, if your file name concentration, you save
-            % concetration var, if your file name rest, you save file rest
-            % Please run this section twice to save concentration and rest
-            folder_save=uigetdir;;
-            if iscell(name)
-                path_save=[folder_save,'\',name{i}];
-            else
-                path_save=[folder,'\',name];
-            end
-            save([path_save,'.mat'],'filtered_save');
-            save([path_save,'_EOG.mat'],'EOG_estimate_save');
-        end
+        save([path_save,'.mat'],'filtered_save');
+        save([folder_save,'\EOG\',name{i},'_EOG.mat'],'EOG_estimate_save');
         clear x_concentration
-        close all;
     end
     % Rest
     if exist('x_rest')
-        option = questdlg('Do you want to save ? ',...
-        'Option',...
-            'Yes','No','No');
-        if (option=="Yes")
-        %% Save data
-        % This section uses to save file, if your file name concentration, you save
-        % concetration var, if your file name rest, you save file rest
-        % Please run this section twice to save concentration and rest
-            folder_save=uigetdir;;
-            if iscell(name)
-            path_save=[folder_save,'\',name{i}];
-            else
-                path_save=[folder,'\',name];
-            end
-            save([path_save,'.mat'],'filtered_save');
-            save([path_save,'_EOG.mat'],'EOG_estimate_save');
-        end
-        clear x_rest;
+        save([path_save,'.mat'],'filtered_save');
+        save([path_save,'_EOG.mat'],'EOG_estimate_save');
         close all;
+        clear x_rest;
     end
     if ~iscell(name)
         break;
