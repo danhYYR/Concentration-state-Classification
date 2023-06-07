@@ -15,7 +15,7 @@ Hd_lowpass = design(d_lowpass);
 
 %Design FIR highpass filter
 d_highpass = fdesign.highpass('N,Fc',10,Fc_highpass);
-Hd_highpass = design(d_highpass);
+Hd_highpass = design(d_highpass);   
 
 %Appy all filter to EEG data
 FpzCz_Filtered = filter(Hd_lowpass,filter(Hd_highpass,filter(Hd_notch,FpzCz)));

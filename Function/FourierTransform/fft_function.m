@@ -3,6 +3,7 @@ n=length(S);
 temp=fft(S,n);
 %S:source
 %fs:frequency sampling
+% Option is the output fft, "Amplitude","Power","Power_Density"
 switch option
     case "Amplitude"
         FFT_Output = 2*abs(temp)/n;%Amplitude

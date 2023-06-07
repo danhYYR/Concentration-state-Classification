@@ -1,5 +1,12 @@
-function [file_path,file_name,file_ext]=Loadfile()
-    [file_name, folder] = uigetfile({'*'}, 'MultiSelect', 'on');
+function [file_path,file_name,file_ext]=Loadfile(type,path_load)
+if ~exist('type','var')
+    type='*';
+end
+if ~exist('path_load','var')
+    path_load=['.'];
+end
+    path_load=[path_load,'\',type];
+    [file_name, folder] = uigetfile(path_load, 'MultiSelect', 'on');
     if iscell(file_name)
         for i=1:length(file_name)
             path=[folder,file_name{i}];
